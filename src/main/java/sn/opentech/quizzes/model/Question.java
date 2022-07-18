@@ -23,4 +23,6 @@ public class Question {
     private String correctAnswer;
 
     private String[] options;
+
+    private boolean status;
 }
