@@ -7,5 +7,5 @@ import sn.opentech.quizzes.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    public User findByUsername(String username);
+    public User findByEmail(String email);
 }
