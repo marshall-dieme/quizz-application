@@ -12,7 +12,6 @@ import sn.opentech.quizzes.model.VerificationToken;
 import sn.opentech.quizzes.service.UserService;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -49,17 +48,17 @@ public class UserController {
     }
     
     @PostMapping(value="/register")
-    public UserDetails registration(@RequestBody @Valid UserDto dto, HttpServletRequest request, Errors errors) throws UserAlreadyExistException {
-        
-        try {
-            User user = userService.register(dto);
-            String appUrl = request.getContextPath();
-            publisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
-            return user;
-        } catch (Exception e) {
-            e.printStackTrace();
+    public ResponseEntity<String> registration(@RequestBody @Valid UserDto dto, HttpServletRequest request, Errors errors) throws UserAlreadyExistException {
+        User user = userService.register(dto);
+        if (user == null) {
             throw new UserAlreadyExistException();
-        } 
+        }
+
+        String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+
+        publisher.publishEvent(new OnRegistrationCompleteEvent(user, request.getLocale(), appUrl));
+
+        return new ResponseEntity<String>("Success", HttpStatus.OK);
     }
     
 
